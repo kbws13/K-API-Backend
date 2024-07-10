@@ -1,3 +1,3 @@
 # K-API-Backend
 
-API 开发平台项目后端
+API 开放平台项目后端
