@@ -20,9 +20,12 @@ import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoAddRequest;
 import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import xyz.kbws.model.entity.InterfaceInfo;
+import xyz.kbws.model.entity.User;
 import xyz.kbws.service.InterfaceInfoService;
+import xyz.kbws.service.UserService;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author kbws
@@ -35,17 +38,22 @@ import javax.annotation.Resource;
 public class InterfaceInfoController {
 
     @Resource
+    private UserService userService;
+
+    @Resource
     private InterfaceInfoService interfaceInfoService;
 
     @ApiOperation(value = "添加")
     @PostMapping("/add")
     @AuthCheck
-    public BaseResponse<String> addInterface(@RequestBody InterfaceInfoAddRequest interfaceInfoAddRequest) {
+    public BaseResponse<String> addInterface(@RequestBody InterfaceInfoAddRequest interfaceInfoAddRequest, HttpServletRequest request) {
         if (interfaceInfoAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         BeanUtil.copyProperties(interfaceInfoAddRequest, interfaceInfo);
+        User loginUser = userService.getLoginUser(request);
+        interfaceInfo.setUserId(loginUser.getId());
         interfaceInfoService.save(interfaceInfo);
         return ResultUtils.success("添加成功");
     }

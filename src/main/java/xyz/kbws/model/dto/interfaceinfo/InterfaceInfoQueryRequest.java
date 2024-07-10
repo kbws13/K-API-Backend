@@ -43,7 +43,7 @@ public class InterfaceInfoQueryRequest extends PageRequest implements Serializab
     /**
      * 接口状态：0-关闭，1-开启
      */
-    private Integer stratus;
+    private Integer status;
 
     /**
      * 请求类型

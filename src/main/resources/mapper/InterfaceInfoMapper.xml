@@ -11,7 +11,7 @@
             <result property="url" column="url" jdbcType="VARCHAR"/>
             <result property="requestHeader" column="requestHeader" jdbcType="VARCHAR"/>
             <result property="responseHeader" column="responseHeader" jdbcType="VARCHAR"/>
-            <result property="stratus" column="stratus" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="method" column="method" jdbcType="VARCHAR"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
@@ -22,7 +22,7 @@
     <sql id="Base_Column_List">
         id,name,description,
         url,requestHeader,responseHeader,
-        stratus,method,userId,
+        `status`,method,userId,
         createTime,updateTime,isDelete
     </sql>
 </mapper>

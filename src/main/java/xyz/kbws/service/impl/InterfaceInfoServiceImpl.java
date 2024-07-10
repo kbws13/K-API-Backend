@@ -34,7 +34,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         String url = queryRequest.getUrl();
         String requestHeader = queryRequest.getRequestHeader();
         String responseHeader = queryRequest.getResponseHeader();
-        Integer stratus = queryRequest.getStratus();
+        Integer status = queryRequest.getStatus();
         String method = queryRequest.getMethod();
         Long userId = queryRequest.getUserId();
         String sortField = queryRequest.getSortField();
@@ -48,7 +48,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         queryWrapper.like(StrUtil.isNotBlank(requestHeader), "requestHeader", requestHeader);
         queryWrapper.like(StrUtil.isNotBlank(responseHeader), "responseHeader", responseHeader);
         queryWrapper.like(StrUtil.isNotBlank(method), "method", method);
-        queryWrapper.eq(stratus != null, "stratus", stratus);
+        queryWrapper.eq(status != null, "status", status);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
