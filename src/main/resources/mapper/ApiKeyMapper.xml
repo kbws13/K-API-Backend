@@ -8,13 +8,14 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="accessKey" column="accessKey" jdbcType="VARCHAR"/>
             <result property="secretKey" column="secretKey" jdbcType="VARCHAR"/>
+            <result property="userId" column="userId" jdbcType="BIGINT" />
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isAbandon" column="isAbandon" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,accessKey,secretKey,
+        id,accessKey,secretKey,userId,
         createTime,updateTime,isAbandon
     </sql>
 </mapper>

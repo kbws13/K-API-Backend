@@ -41,6 +41,7 @@ create table if not exists api_key
     id         bigint                             not null auto_increment primary key comment 'id',
     accessKey  varchar(512)                       not null comment 'accessKey',
     secretKey  varchar(512)                       not null comment 'secretKey',
+    userId     bigint                             not null comment '创建人',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isAbandon  tinyint  default 0                 not null comment '是否弃用'

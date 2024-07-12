@@ -32,6 +32,11 @@ public class ApiKey implements Serializable {
     private String secretKey;
 
     /**
+     * 创建人
+     */
+    private Long userId;
+
+    /**
      * 创建时间
      */
     private Date createTime;
