@@ -3,8 +3,6 @@ package xyz.kbws.utils;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
 
-import java.util.Map;
-
 /**
  * @author kbws
  * @date 2024/7/13

@@ -1,8 +1,6 @@
 package xyz.kbws.client;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.DigestAlgorithm;
-import cn.hutool.crypto.digest.Digester;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -18,12 +16,12 @@ import java.util.Map;
  * @date 2024/7/11
  * @description: 调用第三方接口的客户端
  */
-public class ApiClient {
+public class KApiClient {
 
     private String accessKey;
     private String secretKey;
 
-    public ApiClient(String accessKey, String secretKey) {
+    public KApiClient(String accessKey, String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
     }
