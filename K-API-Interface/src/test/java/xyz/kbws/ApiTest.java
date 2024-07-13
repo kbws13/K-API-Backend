@@ -13,11 +13,13 @@ import xyz.kbws.model.User;
 public class ApiTest {
 
     public static void main(String[] args) {
-        ApiClient apiClient = new ApiClient();
+        String accessKey = "kbws";
+        String secretKey = "Eternal";
+        ApiClient apiClient = new ApiClient(accessKey, secretKey);
         System.out.println(apiClient.getNameByGet("kbws"));
         System.out.println(apiClient.getNameByPost("kbws"));
         User user = new User();
-        user.setUserName("Eternal");
+        user.setUserName("kbws");
         System.out.println(apiClient.getUserNameByPost(user));
     }
 }
