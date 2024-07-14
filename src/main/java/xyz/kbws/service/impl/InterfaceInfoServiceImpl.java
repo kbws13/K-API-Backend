@@ -32,6 +32,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         String name = queryRequest.getName();
         String description = queryRequest.getDescription();
         String url = queryRequest.getUrl();
+        String requestParams = queryRequest.getRequestParams();
         String requestHeader = queryRequest.getRequestHeader();
         String responseHeader = queryRequest.getResponseHeader();
         Integer status = queryRequest.getStatus();
@@ -45,6 +46,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
         queryWrapper.like(StrUtil.isNotBlank(description), "description", description);
         queryWrapper.like(StrUtil.isNotBlank(url), "url", url);
+        queryWrapper.like(StrUtil.isNotBlank(requestParams), "requestParams", requestParams);
         queryWrapper.like(StrUtil.isNotBlank(requestHeader), "requestHeader", requestHeader);
         queryWrapper.like(StrUtil.isNotBlank(responseHeader), "responseHeader", responseHeader);
         queryWrapper.like(StrUtil.isNotBlank(method), "method", method);
