@@ -1,25 +1,31 @@
 package xyz.kbws.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.constant.CommonConstant;
 import xyz.kbws.constant.UserConstant;
 import xyz.kbws.exception.BusinessException;
 import xyz.kbws.mapper.UserMapper;
 import xyz.kbws.model.dto.user.UserQueryRequest;
+import xyz.kbws.model.entity.ApiKey;
 import xyz.kbws.model.entity.User;
 import xyz.kbws.model.enums.UserRoleEnum;
 import xyz.kbws.model.vo.LoginUserVO;
 import xyz.kbws.model.vo.UserVO;
+import xyz.kbws.service.ApiKeyService;
 import xyz.kbws.service.UserService;
 import xyz.kbws.utils.SqlUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +38,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    @Resource
+    private ApiKeyService apiKeyService;
+
     /**
      * 盐值，混淆密码
      */
     public static final String SALT = "kbws";
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
@@ -61,15 +71,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (count > 0) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
             }
-            // 2. 加密
-            //String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
-            String encryptPassword = userPassword;
+            // 2.分配 accessKey secretKey
+            String accessKey = DigestUtil.md5Hex(SALT + userAccount + RandomUtil.randomString(5));
+            String secretKey = DigestUtil.md5Hex(SALT + userAccount + RandomUtil.randomString(5));
             // 3. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);
-            user.setUserPassword(encryptPassword);
+            user.setUserPassword(userPassword);
             boolean saveResult = this.save(user);
             if (!saveResult) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
+            }
+            ApiKey apiKey = new ApiKey();
+            apiKey.setAccessKey(accessKey);
+            apiKey.setSecretKey(secretKey);
+            apiKey.setUserId(user.getId());
+            boolean save = apiKeyService.save(apiKey);
+            if (!save) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
             }
             return user.getId();
