@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.kbws.annotation.AuthCheck;
 import xyz.kbws.client.KApiClient;
 import xyz.kbws.common.*;
@@ -60,6 +57,17 @@ public class InterfaceInfoController {
         interfaceInfo.setUserId(loginUser.getId());
         interfaceInfoService.save(interfaceInfo);
         return ResultUtils.success("添加成功");
+    }
+
+    @ApiOperation(value = "根据id查询")
+    @GetMapping("/get/{id}")
+    @AuthCheck
+    public BaseResponse<InterfaceInfo> getInterfaceById(@PathVariable("id") Long id) {
+        InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
+        if (interfaceInfo == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "该接口不存在");
+        }
+        return ResultUtils.success(interfaceInfo);
     }
 
     @ApiOperation(value = "更新")
@@ -125,7 +133,7 @@ public class InterfaceInfoController {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
         }
         InterfaceInfo interfaceInfo = new InterfaceInfo();
-        interfaceInfo.setId(interfaceInfo.getId());
+        interfaceInfo.setId(idRequest.getId());
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
@@ -144,7 +152,7 @@ public class InterfaceInfoController {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         InterfaceInfo interfaceInfo = new InterfaceInfo();
-        interfaceInfo.setId(interfaceInfo.getId());
+        interfaceInfo.setId(idRequest.getId());
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
