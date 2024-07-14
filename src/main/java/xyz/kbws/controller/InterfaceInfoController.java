@@ -2,6 +2,8 @@ package xyz.kbws.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,11 +16,14 @@ import xyz.kbws.constant.UserConstant;
 import xyz.kbws.exception.BusinessException;
 import xyz.kbws.exception.ThrowUtils;
 import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoAddRequest;
+import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
+import xyz.kbws.model.entity.ApiKey;
 import xyz.kbws.model.entity.InterfaceInfo;
 import xyz.kbws.model.entity.User;
 import xyz.kbws.model.enums.InterfaceInfoStatusEnum;
+import xyz.kbws.service.ApiKeyService;
 import xyz.kbws.service.InterfaceInfoService;
 import xyz.kbws.service.UserService;
 
@@ -40,6 +45,9 @@ public class InterfaceInfoController {
 
     @Resource
     private InterfaceInfoService interfaceInfoService;
+
+    @Resource
+    private ApiKeyService apiKeyService;
 
     @Resource
     private KApiClient kApiClient;
@@ -156,5 +164,34 @@ public class InterfaceInfoController {
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
+    }
+
+    @ApiOperation(value = "调用接口")
+    @PostMapping("/invoke")
+    @AuthCheck
+    public BaseResponse<Object> invokeInterface(@RequestBody InterfaceInfoInvokeRequest invokeRequest, HttpServletRequest request) {
+        if (invokeRequest == null || invokeRequest.getId() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long id = invokeRequest.getId();
+        String userRequestParams = invokeRequest.getUserRequestParams();
+        // 判断是否存在
+        InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
+        if (interfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        if (interfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已关闭");
+        }
+        User loginUser = userService.getLoginUser(request);
+        QueryWrapper<ApiKey> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userId", loginUser.getId());
+        ApiKey apiKey = apiKeyService.getOne(queryWrapper);
+        String accessKey = apiKey.getAccessKey();
+        String secretKey = apiKey.getSecretKey();
+        xyz.kbws.model.User user = JSONUtil.toBean(userRequestParams, xyz.kbws.model.User.class);
+        KApiClient tempClient = new KApiClient(accessKey, secretKey);
+        String userNameByPost = tempClient.getUserNameByPost(user);
+        return ResultUtils.success(userNameByPost);
     }
 }
