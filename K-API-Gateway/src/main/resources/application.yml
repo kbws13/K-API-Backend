@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: K-API-Gateway
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader=source, kbws
+      routes:
+        - id: api_route
+          uri: http://localhost:8123
+          predicates:
+            - Path=/api/**
+server:
+  port: 8090
+

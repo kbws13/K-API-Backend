@@ -29,7 +29,7 @@ public class KApiClient {
     public String getNameByGet(String name) {
         HashMap<String, Object> parmaMap = new HashMap<>();
         parmaMap.put("name", name);
-        String result = HttpUtil.get("http://localhost:8123/api/name/", parmaMap);
+        String result = HttpUtil.get("http://localhost:8090/api/name/", parmaMap);
         System.out.println(result);
         return result;
     }
@@ -37,14 +37,14 @@ public class KApiClient {
     public String getNameByPost(String name) {
         HashMap<String, Object> parmaMap = new HashMap<>();
         parmaMap.put("name", name);
-        String result = HttpUtil.post("http://localhost:8123/api/name/", parmaMap);
+        String result = HttpUtil.post("http://localhost:8090/api/name/", parmaMap);
         System.out.println(result);
         return result;
     }
 
     public String getUserNameByPost(User user) {
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post("http://localhost:8123/api/name/user")
+        HttpResponse httpResponse = HttpRequest.post("http://localhost:8090/api/name/user")
                 .addHeaders(getHeaderMap(json))
                 .body(json)
                 .execute();
