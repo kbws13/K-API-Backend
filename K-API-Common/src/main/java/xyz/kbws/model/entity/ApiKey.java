@@ -4,17 +4,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 用户调用接口关系表
- * @TableName user_interface_info
+ * API签名密钥表
+ * @TableName api_key
  */
-@TableName(value ="user_interface_info")
+@TableName(value ="api_key")
 @Data
-public class UserInterfaceInfo implements Serializable {
+public class ApiKey implements Serializable {
     /**
      * id
      */
@@ -22,29 +23,19 @@ public class UserInterfaceInfo implements Serializable {
     private Long id;
 
     /**
-     * 调用用户id
+     * accessKey
+     */
+    private String accessKey;
+
+    /**
+     * secretKey
+     */
+    private String secretKey;
+
+    /**
+     * 创建人
      */
     private Long userId;
-
-    /**
-     * 接口id
-     */
-    private Long interfaceId;
-
-    /**
-     * 总调用次数
-     */
-    private Integer totalNum;
-
-    /**
-     * 剩余调用次数
-     */
-    private Integer leftNum;
-
-    /**
-     * 0-正常， 1-禁用
-     */
-    private Integer status;
 
     /**
      * 创建时间
@@ -57,9 +48,9 @@ public class UserInterfaceInfo implements Serializable {
     private Date updateTime;
 
     /**
-     * 是否删除
+     * 是否弃用
      */
-    private Integer isDelete;
+    private Integer isAbandon;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

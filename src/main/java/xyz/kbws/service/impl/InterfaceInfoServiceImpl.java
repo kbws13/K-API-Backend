@@ -3,15 +3,14 @@ package xyz.kbws.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.constant.CommonConstant;
 import xyz.kbws.exception.BusinessException;
+import xyz.kbws.mapper.InterfaceInfoMapper;
 import xyz.kbws.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import xyz.kbws.model.entity.InterfaceInfo;
-import xyz.kbws.model.entity.User;
 import xyz.kbws.service.InterfaceInfoService;
-import xyz.kbws.mapper.InterfaceInfoMapper;
-import org.springframework.stereotype.Service;
 import xyz.kbws.utils.SqlUtils;
 
 /**
