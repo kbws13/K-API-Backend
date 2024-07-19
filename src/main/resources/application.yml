@@ -72,10 +72,9 @@ kapi:
 
 dubbo:
   application:
-    name: dubbo-springboot-demo-provider
+    name: k-api-backend
   protocol:
     name: dubbo
     port: -1
   registry:
-    id: nacos-registry
     address: nacos://localhost:8848

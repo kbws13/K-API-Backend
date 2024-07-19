@@ -21,11 +21,11 @@ logging:
           gateway: trace
 dubbo:
   application:
-    name: dubbo-springboot-demo-provider
+    name: k-api-gateway
+    qosPort: 33333
   protocol:
     name: dubbo
     port: -1
   registry:
-    id: nacos-registry
     address: nacos://localhost:8848
 
