@@ -64,10 +64,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                 request.getId(), path, method, request.getQueryParams(),
                 sourceAddress, request.getRemoteAddress());
         // 2.黑白名单
-        //if (!IP_WHITE_LIST.contains(sourceAddress)) {
-        //    response.setStatusCode(HttpStatus.FORBIDDEN);
-        //    return response.setComplete();
-        //}
+        if (!IP_WHITE_LIST.contains(sourceAddress)) {
+            response.setStatusCode(HttpStatus.FORBIDDEN);
+            return response.setComplete();
+        }
         // 3.用户鉴权
         HttpHeaders headers = request.getHeaders();
         String accessKey = headers.getFirst("accessKey");
@@ -136,22 +136,21 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                             Flux<? extends DataBuffer> fluxBody = Flux.from(body);
                             // 往返回值里写数据
                             // 拼接字符串
-                            return super.writeWith(
-                                    fluxBody.map(dataBuffer -> {
-                                        // 7. 调用成功，接口调用次数 + 1
-                                        try {
-                                            innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
-                                            log.info("接口调用次数增加成功: interfaceInfoId = {}, userId = {}", interfaceInfoId, userId);
-                                        } catch (Exception e) {
-                                            log.error("invokeCount error.", e);
-                                        }
-                                        byte[] content = new byte[dataBuffer.readableByteCount()];
-                                        dataBuffer.read(content);
-                                        DataBufferUtils.release(dataBuffer);
-                                        String data = new String(content, StandardCharsets.UTF_8);
-                                        log.info("响应结果：" + data);
-                                        return bufferFactory.wrap(content);
-                                    }));
+                            return super.writeWith(fluxBody.map(dataBuffer -> {
+                                // 7. 调用成功，接口调用次数 + 1
+                                try {
+                                    innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
+                                    log.info("接口调用次数增加成功: interfaceInfoId = {}, userId = {}", interfaceInfoId, userId);
+                                } catch (Exception e) {
+                                    log.error("invokeCount error.", e);
+                                }
+                                byte[] content = new byte[dataBuffer.readableByteCount()];
+                                dataBuffer.read(content);
+                                DataBufferUtils.release(dataBuffer);
+                                String data = new String(content, StandardCharsets.UTF_8);
+                                log.info("响应结果：" + data);
+                                return bufferFactory.wrap(content);
+                            }));
                         } else {
                             // 8. 调用失败，返回一个规范的错误码
                             log.error("<--- {} 响应code异常", getStatusCode());
