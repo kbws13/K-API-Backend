@@ -125,6 +125,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             DataBufferFactory bufferFactory = originalResponse.bufferFactory();
             // 拿到响应码
             HttpStatus statusCode = originalResponse.getStatusCode();
+            log.info("Original Response Status Code: {}", statusCode == HttpStatus.OK);
             if (statusCode == HttpStatus.OK) {
                 // 装饰，增强能力
                 ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
